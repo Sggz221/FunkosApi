@@ -9,25 +9,39 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 public class FunkoMapper {
-    public static Funko postPutToModel(FunkoPostPutRequest postPutFunko) {
+
+    public static Funko postPutToModel(FunkoPostPutRequest dto) {
         Funko funko = new Funko();
 
-        funko.setUuid(UUID.fromString(postPutFunko.getUuid()));
-        funko.setNombre(postPutFunko.getNombre());
-        funko.setPrecio(postPutFunko.getPrecio());
-        funko.setCategoria(Categoria.valueOf(postPutFunko.getCategoria()));
-        funko.setFechaLanzamiento(LocalDate.parse(postPutFunko.getFechaLanzamiento()));
+        // UUID: generar uno si no se pasa
+        if (dto.getUuid() != null && !dto.getUuid().isBlank()) funko.setUuid(UUID.fromString(dto.getUuid()));
+        else funko.setUuid(UUID.randomUUID());
+
+        funko.setNombre(dto.getNombre());
+        funko.setPrecio(dto.getPrecio());
+
+        if (dto.getCategoria() != null && !dto.getCategoria().isBlank()) funko.setCategoria(Categoria.valueOf(dto.getCategoria()));
+
+
+        if (dto.getFechaLanzamiento() != null && !dto.getFechaLanzamiento().isBlank()) {
+            funko.setFechaLanzamiento(LocalDate.parse(dto.getFechaLanzamiento()));
+        }
+
         return funko;
     }
 
-    public static Funko patchToModel(FunkoPatchRequest funkoPatchRequest) {
+    /**
+     * Convierte un FunkoPatchRequest a Funko (para PATCH)
+     */
+    public static Funko patchToModel(FunkoPatchRequest dto) {
         Funko funko = new Funko();
-        if (funko.getUuid() != null) funko.setUuid(UUID.fromString(funkoPatchRequest.getUuid()));
-        if (funko.getNombre() != null) funko.setNombre(funkoPatchRequest.getNombre());
-        if (funko.getPrecio() != null) funko.setPrecio(funkoPatchRequest.getPrecio());
-        if (funko.getCategoria() != null) funko.setCategoria(Categoria.valueOf(funkoPatchRequest.getCategoria()));
-        if (funko.getFechaLanzamiento() != null) funko.setFechaLanzamiento(LocalDate.parse(funkoPatchRequest.getFechaLanzamiento()));
+
+        if (dto.getUuid() != null && !dto.getUuid().isBlank()) funko.setUuid(UUID.fromString(dto.getUuid()));
+        if (dto.getNombre() != null && !dto.getNombre().isBlank()) funko.setNombre(dto.getNombre());
+        if (dto.getPrecio() != null) funko.setPrecio(dto.getPrecio());
+        if (dto.getCategoria() != null && !dto.getCategoria().isBlank()) funko.setCategoria(Categoria.valueOf(dto.getCategoria()));
+        if (dto.getFechaLanzamiento() != null && !dto.getFechaLanzamiento().isBlank()) funko.setFechaLanzamiento(LocalDate.parse(dto.getFechaLanzamiento()));
+
         return funko;
     }
-
 }

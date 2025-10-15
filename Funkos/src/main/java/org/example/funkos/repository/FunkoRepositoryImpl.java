@@ -42,11 +42,12 @@ public class FunkoRepositoryImpl implements FunkoRepository {
         Funko funkoActualizado = funkos.get(id);
         if (funkoActualizado == null) return Optional.empty();
 
-        if (funko.getNombre() != null) funkoActualizado.setNombre(funko.getNombre());
-        if (funko.getUuid() != null) funkoActualizado.setUuid(funko.getUuid());
-        if (funko.getPrecio() != null) funkoActualizado.setPrecio(funko.getPrecio());
-        if (funko.getCategoria() != null) funkoActualizado.setCategoria(funko.getCategoria());
-        if (funko.getFechaLanzamiento() != null) funkoActualizado.setFechaLanzamiento(funko.getFechaLanzamiento());
+        funkoActualizado.setId(id);
+        funkoActualizado.setNombre(funko.getNombre());
+        funkoActualizado.setUuid(funko.getUuid());
+        funkoActualizado.setPrecio(funko.getPrecio());
+        funkoActualizado.setCategoria(funko.getCategoria());
+        funkoActualizado.setFechaLanzamiento(funko.getFechaLanzamiento());
 
         funkoActualizado.setUpdatedAt(LocalDateTime.now());
         funkos.put(id, funkoActualizado);
