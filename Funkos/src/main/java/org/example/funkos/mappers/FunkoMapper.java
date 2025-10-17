@@ -44,4 +44,11 @@ public class FunkoMapper {
 
         return funko;
     }
+
+    public static FunkoPostPutRequest toPostPut(Funko funko) {
+        return new FunkoPostPutRequest(
+                funko.getUuid(),
+                funko.get
+        );
+    }
 }
