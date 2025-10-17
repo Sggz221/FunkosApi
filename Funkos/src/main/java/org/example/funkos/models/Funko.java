@@ -15,7 +15,6 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "funkos")
 public class Funko {
     @Id // Anotacion necesaria para definir la PK de la tabla
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Id autoincremental
@@ -33,13 +32,12 @@ public class Funko {
     private Double precio;
 
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING) // Le indicamos a la base de datos que debe guardarlo como un String, puede guardarlo com un Int tambien y lo que guarda es la posicion del indice dentro del enum (0, 1 , 2, etc.)
-    private Categoria categoria;
+    private String categoria;
 
     @Column(name = "fecha_lanzamiendo", nullable = false)
     private LocalDate fechaLanzamiento;
 
-    @Column(name= "created_at", nullable = false)
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)

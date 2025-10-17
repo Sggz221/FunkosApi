@@ -1,14 +1,11 @@
 package org.example.funkos.repository;
 
-import org.example.funkos.models.Categoria;
 import org.example.funkos.models.Funko;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -17,10 +14,10 @@ public interface FunkoRepository extends JpaRepository<Funko, Long> {
     // Con nombre de metodos de JPA
     public List<Funko> findByNombreContainingIgnoreCase(String nombre);
     public List<Funko> findByPrecioLessThan(Double precio);
-    public List<Funko> findByCategoria(Categoria categoria);
+    public List<Funko> findByCategoria(String categoria);
     public Funko findByUuid(UUID uuid);
-    // Con anotaciones Query
 
+    // Con anotaciones Query
     @Query("SELECT f FROM Funko f WHERE LOWER(f.nombre) LIKE LOWER(CONCAT('%', :nombre, '%'))")
     List<Funko> findByNombreQuery(@Param("nombre") String nombre);
 
@@ -28,7 +25,7 @@ public interface FunkoRepository extends JpaRepository<Funko, Long> {
     List<Funko> findByPrecioLessThanQuery(@Param("precio") Double precio);
 
     @Query("SELECT f FROM Funko f WHERE f.categoria = :categoria")
-    List<Funko> findByCategoriaQuery(@Param("categoria") Categoria categoria);
+    List<Funko> findByCategoriaQuery(@Param("categoria") String categoria);
 
     @Query("SELECT f FROM Funko f WHERE f.uuid = :uuid")
     Funko findByUuidQuery(@Param("uuid") UUID uuid);

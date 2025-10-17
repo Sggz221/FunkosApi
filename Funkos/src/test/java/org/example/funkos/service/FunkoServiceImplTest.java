@@ -2,11 +2,10 @@ package org.example.funkos.service;
 
 import org.example.funkos.exceptions.FunkoException;
 import org.example.funkos.mappers.FunkoMapper;
-import org.example.funkos.models.Categoria;
 import org.example.funkos.models.Funko;
-import org.example.funkos.repository.OldRepository;
 import org.example.funkos.dto.request.FunkoPatchRequest;
 import org.example.funkos.dto.request.FunkoPostPutRequest;
+import org.example.funkos.repository.FunkoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,7 +25,7 @@ import static org.mockito.Mockito.*;
 class FunkoServiceImplTest {
 
     @Mock
-    private OldRepository repository;
+    private FunkoRepository repository;
 
     @InjectMocks
     private FunkoServiceImpl service;
@@ -42,14 +41,14 @@ class FunkoServiceImplTest {
         funko.setUuid(UUID.randomUUID());
         funko.setNombre("Funko Goku");
         funko.setPrecio(25.0);
-        funko.setCategoria(Categoria.ANIME);
+        funko.setCategoria("ANIME");
         funko.setFechaLanzamiento(LocalDate.of(2021, 1, 1));
 
         requestPostPut = new FunkoPostPutRequest();
         requestPostPut.setUuid(UUID.randomUUID().toString()); // 👈 Añadido
         requestPostPut.setNombre("Funko Vegeta");
         requestPostPut.setPrecio(30.0);
-        requestPostPut.setCategoria(String.valueOf(Categoria.ANIME));
+        requestPostPut.setCategoria(String.valueOf("ANIME"));
         requestPostPut.setFechaLanzamiento(String.valueOf(LocalDate.of(2023, 5, 10)));
 
         requestPatch = new FunkoPatchRequest();
@@ -60,13 +59,13 @@ class FunkoServiceImplTest {
 
     @Test
     void getAll_ShouldReturnListOfFunkos() {
-        when(repository.getAll()).thenReturn(List.of(funko));
+        when(repository.findAll()).thenReturn(List.of(funko));
 
         var result = service.getAll();
 
         assertEquals(1, result.size());
         assertEquals("Funko Goku", result.get(0).getNombre());
-        verify(repository, times(1)).getAll();
+        verify(repository, times(1)).findAll();
     }
 
     @Test

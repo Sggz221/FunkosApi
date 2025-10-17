@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.example.funkos.dto.request.FunkoPatchRequest;
 import org.example.funkos.dto.request.FunkoPostPutRequest;
-import org.example.funkos.models.Categoria;
 import org.example.funkos.models.Funko;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +60,7 @@ class FunkoRestControllerTest {
         request.setUuid(UUID.randomUUID().toString());
         request.setNombre("Gyro Zeppeli");
         request.setPrecio(29.99);
-        request.setCategoria(Categoria.ANIME.name());
+        request.setCategoria("ANIME");
         request.setFechaLanzamiento(LocalDate.now().toString());
 
         MockHttpServletResponse response = mockMvc.perform(
@@ -107,7 +106,7 @@ class FunkoRestControllerTest {
         request.setUuid(UUID.randomUUID().toString());
         request.setNombre("Vegeta SSJ Blue");
         request.setPrecio(35.99);
-        request.setCategoria(Categoria.ANIME.name());
+        request.setCategoria("ANIME");
         request.setFechaLanzamiento(LocalDate.now().minusDays(10).toString());
 
         MockHttpServletResponse response = mockMvc.perform(
@@ -123,7 +122,7 @@ class FunkoRestControllerTest {
         assertAll(
                 () -> assertEquals(HttpStatus.OK.value(), response.getStatus()),
                 () -> assertEquals("Vegeta SSJ Blue", res.getNombre()),
-                () -> assertEquals(Categoria.ANIME, res.getCategoria())
+                () -> assertEquals("ANIME", res.getCategoria())
         );
     }
 
