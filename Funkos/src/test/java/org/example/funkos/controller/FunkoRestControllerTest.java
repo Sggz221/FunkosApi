@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class FunkoRestControllerTest {
 
-    // Como SpringBoot usa JAckson para serializar JSONs, hay que crear un mapeador nuevo para las fechas (LocalDate y  LocalDateTime)
+    // Como SpringBoot usa Jackson para serializar JSONs, hay que crear un mapeador nuevo para las fechas (LocalDate y  LocalDateTime)
     private final ObjectMapper mapper = new ObjectMapper()
             .registerModule(new JavaTimeModule()) // <- El modulo de tiempo
             .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);  // <- Cambia el formato predeterminado de Jackson, el cual son timestamps (fecha en milisegundos totales)

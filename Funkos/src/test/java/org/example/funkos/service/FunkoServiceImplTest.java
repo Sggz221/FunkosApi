@@ -4,7 +4,7 @@ import org.example.funkos.exceptions.FunkoException;
 import org.example.funkos.mappers.FunkoMapper;
 import org.example.funkos.models.Categoria;
 import org.example.funkos.models.Funko;
-import org.example.funkos.repository.FunkoRepositoryImpl;
+import org.example.funkos.repository.OldRepository;
 import org.example.funkos.dto.request.FunkoPatchRequest;
 import org.example.funkos.dto.request.FunkoPostPutRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +26,7 @@ import static org.mockito.Mockito.*;
 class FunkoServiceImplTest {
 
     @Mock
-    private FunkoRepositoryImpl repository;
+    private OldRepository repository;
 
     @InjectMocks
     private FunkoServiceImpl service;

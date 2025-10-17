@@ -38,10 +38,13 @@ dependencies {
 	implementation("org.projectlombok:lombok")
 	annotationProcessor("org.projectlombok:lombok")
 
-
 	//Test
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+	// JPA
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	implementation("com.h2database:h2") // base de datos a usar, puede ser otra
 }
 
 tasks.withType<Test> {

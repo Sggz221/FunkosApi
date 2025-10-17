@@ -6,7 +6,7 @@ import org.example.funkos.dto.request.FunkoPostPutRequest;
 import org.example.funkos.exceptions.FunkoException;
 import org.example.funkos.mappers.FunkoMapper;
 import org.example.funkos.models.Funko;
-import org.example.funkos.repository.FunkoRepositoryImpl;
+import org.example.funkos.repository.OldRepository;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -18,10 +18,10 @@ import java.util.List;
 @Service
 public class FunkoServiceImpl implements FunkoService {
     private final Logger logger = (Logger) LoggerFactory.getLogger(FunkoServiceImpl.class);
-    private final FunkoRepositoryImpl repository;
+    private final OldRepository repository;
 
     @Autowired
-    public FunkoServiceImpl(FunkoRepositoryImpl repository) { this.repository = repository; }
+    public FunkoServiceImpl(OldRepository repository) { this.repository = repository; }
 
     @Override
     public List<Funko> getAll() {

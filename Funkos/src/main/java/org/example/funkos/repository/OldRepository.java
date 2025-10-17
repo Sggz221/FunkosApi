@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class FunkoRepositoryImpl implements FunkoRepository {
-    private final Logger logger = (Logger) LoggerFactory.getLogger(FunkoRepositoryImpl.class);
+public class OldRepository implements FunkoRepository {
+    private final Logger logger = (Logger) LoggerFactory.getLogger(OldRepository.class);
     private Long nextId = 0L;
     private final HashMap<Long, Funko> funkos = new HashMap<>();
 
@@ -23,7 +23,7 @@ public class FunkoRepositoryImpl implements FunkoRepository {
     }
 
     @Override
-    public Optional<Funko> getById(Long id) {
+    public Funko getById(Long id) {
         logger.info("Buscando funko por id: " + id);
         return funkos.get(id) == null ? Optional.empty() : Optional.of(funkos.get(id));
     }
