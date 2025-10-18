@@ -6,6 +6,7 @@ import org.example.funkos.dto.response.FunkoResponse;
 import org.example.funkos.models.Funko;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class FunkoMapper {
@@ -27,6 +28,8 @@ public class FunkoMapper {
             funko.setFechaLanzamiento(LocalDate.parse(dto.getFechaLanzamiento()));
         }
 
+        funko.setCreatedAt(LocalDateTime.now());
+        funko.setUpdatedAt(LocalDateTime.now());
         return funko;
     }
 
