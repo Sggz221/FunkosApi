@@ -48,11 +48,6 @@ dependencies {
 	// JPA
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("com.h2database:h2") // base de datos a usar, puede ser otra
-
-	// TestContainers con H2
-	testImplementation("org.testcontainers:junit-jupiter:1.19.1")
-	testImplementation("org.testcontainers:h2:1.19.1")
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
 tasks.withType<Test> {

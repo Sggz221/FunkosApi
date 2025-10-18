@@ -12,10 +12,10 @@ import java.util.UUID;
 public interface FunkoRepository extends JpaRepository<Funko, Long> {
     // Metodos extra porque el CRUD basico ya lo implementa JPA
     // Con nombre de metodos de JPA
-    public List<Funko> findByNombreContainingIgnoreCase(String nombre);
-    public List<Funko> findByPrecioLessThan(Double precio);
-    public List<Funko> findByCategoria(String categoria);
-    public Funko findByUuid(UUID uuid);
+    List<Funko> findByNombreContainingIgnoreCase(String nombre);
+    List<Funko> findByPrecioLessThan(Double precio);
+    List<Funko> findByCategoria(String categoria);
+    Funko findByUuid(UUID uuid);
 
     // Con anotaciones Query
     @Query("SELECT f FROM Funko f WHERE LOWER(f.nombre) LIKE LOWER(CONCAT('%', :nombre, '%'))")

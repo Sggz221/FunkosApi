@@ -76,6 +76,7 @@ public class FunkoServiceImpl implements FunkoService {
 
         var funkoToUpdate = FunkoMapper.postPutToModel(funko);
         funkoToUpdate.setId(id);
+        funkoToUpdate.setUpdatedAt(LocalDateTime.now());
         return FunkoMapper.toResponse(repository.save(funkoToUpdate)); //  EL save funciona como update pero hibernate infiere si auieres actualizar o guardar
     }
 
@@ -88,6 +89,7 @@ public class FunkoServiceImpl implements FunkoService {
                 .orElseThrow(() -> new FunkoException.NotFoundException("No se ha encontrado el funko con id: " + id));
 
         // Solo actualiza los campos que vengan no nulos en el patch request
+        if (funko.getUuid() != null) existing.setNombre(funko.getUuid());
         if (funko.getNombre() != null) existing.setNombre(funko.getNombre());
         if (funko.getPrecio() != null) existing.setPrecio(funko.getPrecio());
         if (funko.getCategoria() != null) existing.setCategoria(funko.getCategoria());
@@ -97,7 +99,7 @@ public class FunkoServiceImpl implements FunkoService {
 
         Funko updated = repository.save(existing);
 
-        logger.info("Funko actualizado parcialmente: {}", updated);
+        logger.info("Funko actualizado parcialmente: "+ updated);
         return FunkoMapper.toResponse(updated);
     }
 
@@ -108,7 +110,7 @@ public class FunkoServiceImpl implements FunkoService {
         var existing  = repository.findById(id);
         if (existing.isEmpty()) throw new FunkoException.NotFoundException("No se ha encontrado el funko con id: " + id);
         repository.delete(existing.get());
-        return new FunkoDeleteResponse("Funko borrado correctamente", existing.get());
+        return new FunkoDeleteResponse("Funko borrado correctamente", FunkoMapper.toResponse(existing.get()));
     }
 
     // Metodos extra

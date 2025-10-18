@@ -10,5 +10,5 @@ import org.example.funkos.models.Funko;
 @NoArgsConstructor
 public class FunkoDeleteResponse {
     private String mensaje;
-    private Funko deleted;
+    private FunkoResponse deleted;
 }
