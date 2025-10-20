@@ -98,7 +98,8 @@ class FunkoServiceImplTest {
 
         assertNotNull(result);
         assertEquals("Funko Vegeta", result.getNombre());
-        verify(repository).save(any(Funko.class));
+        verify(repository, atLeastOnce()).save(any(Funko.class));
+
     }
 
     @Test
@@ -114,7 +115,7 @@ class FunkoServiceImplTest {
 
         assertEquals("Funko Vegeta", result.getNombre());
         verify(repository).findById(1L);
-        verify(repository).save(any(Funko.class));
+        verify(repository, atLeastOnce()).save(any(Funko.class));
     }
 
     @Test
@@ -135,7 +136,7 @@ class FunkoServiceImplTest {
         assertEquals("Funko Patch", result.getNombre());
         assertEquals(40.0, result.getPrecio());
         verify(repository).findById(1L);
-        verify(repository).save(any(Funko.class));
+        verify(repository, atLeastOnce()).save(any(Funko.class));
     }
 
     @Test

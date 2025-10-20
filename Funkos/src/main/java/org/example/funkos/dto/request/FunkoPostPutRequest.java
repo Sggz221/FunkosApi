@@ -21,7 +21,6 @@ public class FunkoPostPutRequest {
     @Min(value = 0, message = "El precio no peude ser negativo")
     private Double precio;
     @NotBlank(message = "Se debe especificar una categoria")
-    @Pattern(regexp = "PELICULAS|ANIME|VIDEOJUEGOS", message = "La categoria debe ser PELICULAS, ANIME o VIDEOJUEGOS")
     private String categoria;
     @NotBlank(message = "Se debe especificar una fecha")
     @Pattern(regexp = "\\d{4}-\\d{2}-\\d{2}", message = "La fecha de lanzamiento debe tener formato AAAA-MM-DD")

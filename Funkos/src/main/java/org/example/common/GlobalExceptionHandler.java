@@ -1,5 +1,7 @@
-package org.example.funkos.exceptions;
+package org.example.common;
 
+import org.example.categorias.exceptions.CategoriaException;
+import org.example.funkos.exceptions.FunkoException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -33,9 +35,27 @@ public class GlobalExceptionHandler {
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(FunkoException.NotFoundException.class)
-    public Map<String, String> handleNotFoundException( FunkoException.NotFoundException ex) {
+    public Map<String, String> handleFunkoNotFoundException( FunkoException.NotFoundException ex) {
         Map<String, String> errors = new HashMap<>();
         errors.put("status", "404");
+        errors.put("error", ex.getMessage());
+        return errors;
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(CategoriaException.NotFoundException.class)
+    public Map<String, String> handleCategoriaNotFoundException( CategoriaException.NotFoundException ex) {
+        Map<String, String> errors = new HashMap<>();
+        errors.put("status", "404");
+        errors.put("error", ex.getMessage());
+        return errors;
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(CategoriaException.ConflictException.class)
+    public Map<String, String> handleConflictException( CategoriaException.ConflictException ex) {
+        Map<String, String> errors = new HashMap<>();
+        errors.put("status", "409");
         errors.put("error", ex.getMessage());
         return errors;
     }

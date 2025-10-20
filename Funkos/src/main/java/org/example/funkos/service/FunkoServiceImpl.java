@@ -131,7 +131,7 @@ public class FunkoServiceImpl implements FunkoService {
     @Override
     public List<FunkoResponse> findByCategoria(String categoria) {
         logger.info("Buscando funkos por categoria: " + categoria);
-        var funkoList = repository.findByCategoria(categoria);
+        var funkoList = repository.findByCategoriaIgnoreCase(categoria);
         return funkoList.stream().map(FunkoMapper::toResponse).collect(Collectors.toList());
     }
 

@@ -6,6 +6,7 @@ import org.example.funkos.dto.request.FunkoPatchRequest;
 import org.example.funkos.dto.request.FunkoPostPutRequest;
 import org.example.funkos.dto.response.FunkoDeleteResponse;
 import org.example.funkos.dto.response.FunkoResponse;
+import org.example.funkos.mappers.FunkoMapper;
 import org.example.funkos.models.Funko;
 import org.example.funkos.service.FunkoServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -211,7 +212,7 @@ public class FunkoRestControllerTest {
         deleted.setNombre("Spider-Man");
         deleted.setUuid(UUID.randomUUID());
 
-        FunkoDeleteResponse deleteResponse = new FunkoDeleteResponse("Funko eliminado correctamente", deleted);
+        FunkoDeleteResponse deleteResponse = new FunkoDeleteResponse("Funko eliminado correctamente", FunkoMapper.toResponse(deleted));
 
         when(funkoService.delete(funkoResponse.getId())).thenReturn(deleteResponse);
 

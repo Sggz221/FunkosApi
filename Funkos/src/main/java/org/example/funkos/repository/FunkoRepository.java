@@ -14,7 +14,7 @@ public interface FunkoRepository extends JpaRepository<Funko, Long> {
     // Con nombre de metodos de JPA
     List<Funko> findByNombreContainingIgnoreCase(String nombre);
     List<Funko> findByPrecioLessThan(Double precio);
-    List<Funko> findByCategoria(String categoria);
+    List<Funko> findByCategoriaIgnoreCase(String categoria);
     Funko findByUuid(UUID uuid);
 
     // Con anotaciones Query
