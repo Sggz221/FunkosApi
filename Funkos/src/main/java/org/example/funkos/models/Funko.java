@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.example.categorias.models.Categoria;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -31,8 +32,9 @@ public class Funko {
     @Min(value = 0, message = "El precio no peude ser nulo")
     private Double precio;
 
-    @Column(nullable = false)
-    private String categoria;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(nullable = false, name = "categoria_id")
+    private Categoria categoria;
 
     @Column(name = "fecha_lanzamiendo", nullable = false)
     private LocalDate fechaLanzamiento;

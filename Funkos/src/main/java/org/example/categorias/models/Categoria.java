@@ -16,7 +16,7 @@ public class Categoria {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(unique= true, nullable = false)
     private String nombre;
 
     @Column(nullable = false, name = "created_at")
@@ -24,4 +24,6 @@ public class Categoria {
 
     @Column(nullable = false, name = "updated_at")
     private LocalDateTime updatedAt;
+
+    // Rompemos la bidireccionalidad porque no queremos guardar los datos de todos los funkos que pertenzcan a una categoría
 }
