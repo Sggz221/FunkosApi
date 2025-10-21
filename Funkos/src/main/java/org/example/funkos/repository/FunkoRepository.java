@@ -1,5 +1,6 @@
 package org.example.funkos.repository;
 
+import jakarta.transaction.Transactional;
 import org.example.categorias.models.Categoria;
 import org.example.funkos.models.Funko;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,6 +22,7 @@ public interface FunkoRepository extends JpaRepository<Funko, Long> {
 
     // Actualizacion de categoria en cascada
     @Modifying
+    @Transactional
     @Query("UPDATE Funko f SET f.categoria = :nuevaCategoria WHERE f.categoria = :categoriaAntigua")
     int actualizarCategorias(@Param("nuevaCategoria") Categoria nuevaCategoria, @Param("categoriaAntigua") Categoria categoriaAntigua);
 

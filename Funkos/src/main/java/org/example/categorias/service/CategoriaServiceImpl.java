@@ -1,5 +1,6 @@
 package org.example.categorias.service;
 
+import jakarta.transaction.Transactional;
 import lombok.val;
 import org.example.categorias.dto.request.CategoriaPatchRequest;
 import org.example.categorias.dto.request.CategoriaPostPutRequest;
@@ -65,6 +66,7 @@ public class CategoriaServiceImpl implements CategoriaService {
     @Override
     public CategoriaResponse save(CategoriaPostPutRequest categoria) {
         logger.info("Guardando categoria: " + categoria);
+        if (categoriaRepository.findByNombreIgnoreCase(categoria.getNombre()) != null ) throw new CategoriaException.ConflictException("La categoria " + categoria.getNombre() + " ya existe.");
         val guardada = categoriaRepository.save(CategoriaMapper.postPutToModel(categoria));
         guardada.setCreatedAt(LocalDateTime.now());
         guardada.setUpdatedAt(LocalDateTime.now());
@@ -76,7 +78,7 @@ public class CategoriaServiceImpl implements CategoriaService {
     public CategoriaResponse update(Long id, CategoriaPostPutRequest categoria) {
         logger.info("Actualizando categoria con id: " + id);
         val nombre = categoriaRepository.findByNombreIgnoreCase(categoria.getNombre()); // Si el nombre nuevo que se le quiere poner a esta categoria ya lo tiene otra hay que devolver un error
-        if(nombre != null && nombre.getId().equals(id)) throw new CategoriaException.ConflictException("El nombre elegido para esta categoria ya lo tiene otra categoria");
+        if(nombre != null && !nombre.getId().equals(id)) throw new CategoriaException.ConflictException("El nombre elegido para esta categoria ya lo tiene otra categoria");
         val actualizada = categoriaRepository.findById(id).orElseThrow(() -> new CategoriaException.NotFoundException("No se encontro categoria con id: " + id));
         actualizada.setId(id);
         actualizada.setNombre(categoria.getNombre());
@@ -86,18 +88,25 @@ public class CategoriaServiceImpl implements CategoriaService {
 
     @Override
     @CachePut(key = "#id")
-    public CategoriaResponse patch(Long id, CategoriaPatchRequest categoria) {
+    @Transactional
+    public CategoriaResponse patch(Long id, CategoriaPatchRequest categoriaPatch) {
         logger.info("Actualizando (patch) categoria con id: " + id);
 
-        val actualizada = categoriaRepository.findById(id).orElseThrow(() -> new CategoriaException.NotFoundException("No se encontro categoria con id: " + id));
-        val nombre = categoriaRepository.findByNombreIgnoreCase(categoria.getNombre());
-        if (nombre != null) { // Si el nombre nuevo que se le quiere poner a esta categoria ya lo tiene otra hay que devolver un error
-            if (nombre.getNombre() != null && nombre.getId().equals(id)) throw new CategoriaException.ConflictException("El nombre elegido para esta categoria ya lo tiene otra categoria");
-            funkoRepository.actualizarCategorias(CategoriaMapper.patchToModel(categoria), actualizada); // Se actualiza la categoria de los funkos
-            actualizada.setNombre(categoria.getNombre()); // Se actualiza el nombre de la categoria
-        }
+        // Recupera la categoria actual
+        Categoria actualizada = categoriaRepository.findById(id).orElseThrow(() -> new CategoriaException.NotFoundException("No se encontró categoria con id: " + id));
+
+        // Comprueba si el nuevo nombre ya existe en otra categoria
+        Categoria existente = categoriaRepository.findByNombreIgnoreCase(categoriaPatch.getNombre());
+        if (existente != null && !existente.getId().equals(id)) throw new CategoriaException.ConflictException("El nombre elegido para esta categoria ya lo tiene otra categoria");
+
+        // Actualiza solo el nombre y la fecha
+        actualizada.setNombre(categoriaPatch.getNombre());
         actualizada.setUpdatedAt(LocalDateTime.now());
-        return CategoriaMapper.toResponse(categoriaRepository.save(actualizada));
+
+        // Guardar la categoria, Hibernate actualiza la relación de los funkos automáticamente (gozada)
+        Categoria saved = categoriaRepository.save(actualizada);
+
+        return CategoriaMapper.toResponse(saved);
     }
 
     @Override

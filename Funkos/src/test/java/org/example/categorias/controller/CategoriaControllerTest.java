@@ -47,7 +47,7 @@ public class CategoriaControllerTest {
     }
 
     private final CategoriaResponse categoriaResponse = new CategoriaResponse(1L, "ANIME");
-    private final CategoriaPostPutRequest postPutRequest = new CategoriaPostPutRequest("MANGA");
+    private final CategoriaPostPutRequest postPutRequest = new CategoriaPostPutRequest(1L, "MANGA");
     private final CategoriaPatchRequest patchRequest = new CategoriaPatchRequest("MANGA");
     private final String endpoint = "/categorias";
 

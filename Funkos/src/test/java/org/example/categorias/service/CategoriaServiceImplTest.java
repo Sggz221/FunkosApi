@@ -29,13 +29,16 @@ class CategoriaServiceImplTest {
     private FunkoRepository funkoRepository;
     private CategoriaServiceImpl categoriaService;
 
-    private Funko funkoPrueba = new Funko(1L, UUID.randomUUID(), "Pepe", 10.0, "ANIME", LocalDate.now(), LocalDateTime.now(), LocalDateTime.now());
+    private Funko funkoPrueba;
 
     @BeforeEach
     void setUp() {
         categoriaRepository = mock(CategoriaRepository.class);
         funkoRepository = mock(FunkoRepository.class);
         categoriaService = new CategoriaServiceImpl(categoriaRepository, funkoRepository);
+
+        Categoria anime = new Categoria(1L, "ANIME", LocalDateTime.now(), LocalDateTime.now());
+        funkoPrueba = new Funko(1L, UUID.randomUUID(), "Pepe", 10.0, anime, LocalDate.now(), LocalDateTime.now(), LocalDateTime.now());
     }
 
     @Test
@@ -70,7 +73,7 @@ class CategoriaServiceImplTest {
 
     @Test
     void testSave() {
-        CategoriaPostPutRequest request = new CategoriaPostPutRequest("VIDEOJUEGOS");
+        CategoriaPostPutRequest request = new CategoriaPostPutRequest(null, "VIDEOJUEGOS");
         Categoria saved = new Categoria(1L, "VIDEOJUEGOS", LocalDateTime.now(), LocalDateTime.now());
         when(categoriaRepository.save(ArgumentMatchers.any(Categoria.class))).thenReturn(saved);
 
@@ -82,8 +85,8 @@ class CategoriaServiceImplTest {
 
     @Test
     void testUpdateConflict() {
-        CategoriaPostPutRequest request = new CategoriaPostPutRequest("ANIME");
-        when(categoriaRepository.findByNombreIgnoreCase("ANIME")).thenReturn(new Categoria());
+        CategoriaPostPutRequest request = new CategoriaPostPutRequest(null, "ANIME");
+        when(categoriaRepository.findByNombreIgnoreCase("ANIME")).thenReturn(new Categoria(2L, "ANIME", LocalDateTime.now(), LocalDateTime.now()));
 
         assertThrows(CategoriaException.ConflictException.class,
                 () -> categoriaService.update(1L, request));
@@ -95,7 +98,7 @@ class CategoriaServiceImplTest {
         Categoria existing = new Categoria(1L, "OLD", LocalDateTime.now(), LocalDateTime.now());
 
         when(categoriaRepository.findById(1L)).thenReturn(Optional.of(existing));
-        when(categoriaRepository.findByNombreIgnoreCase("ANIME")).thenReturn(new Categoria());
+        when(categoriaRepository.findByNombreIgnoreCase("ANIME")).thenReturn(new Categoria(2L, "ANIME", LocalDateTime.now(), LocalDateTime.now()));
 
         assertThrows(CategoriaException.ConflictException.class,
                 () -> categoriaService.patch(1L, request));
@@ -105,7 +108,7 @@ class CategoriaServiceImplTest {
     void testDeleteWithFunkos() {
         Categoria cat = new Categoria(1L, "ANIME", LocalDateTime.now(), LocalDateTime.now());
         when(categoriaRepository.findById(1L)).thenReturn(Optional.of(cat));
-        when(funkoRepository.findByCategoria("ANIME")).thenReturn(List.of(funkoPrueba));
+        when(funkoRepository.findByCategoria(cat)).thenReturn(List.of(funkoPrueba));
 
         assertThrows(CategoriaException.ConflictException.class,
                 () -> categoriaService.delete(1L));
@@ -115,7 +118,7 @@ class CategoriaServiceImplTest {
     void testDeleteSuccess() {
         Categoria cat = new Categoria(1L, "ANIME", LocalDateTime.now(), LocalDateTime.now());
         when(categoriaRepository.findById(1L)).thenReturn(Optional.of(cat));
-        when(funkoRepository.findByCategoria("ANIME")).thenReturn(Collections.emptyList());
+        when(funkoRepository.findByCategoria(cat)).thenReturn(Collections.emptyList());
 
         CategoriaDeleteResponse response = categoriaService.delete(1L);
 
@@ -148,7 +151,7 @@ class CategoriaServiceImplTest {
         when(categoriaRepository.findByNombreIgnoreCase("MANGA")).thenReturn(null);
         when(categoriaRepository.save(any(Categoria.class))).thenAnswer(i -> i.getArguments()[0]);
 
-        CategoriaPostPutRequest request = new CategoriaPostPutRequest("MANGA");
+        CategoriaPostPutRequest request = new CategoriaPostPutRequest(null, "MANGA");
         CategoriaResponse response = categoriaService.update(1L, request);
 
         assertEquals("MANGA", response.getNombre());
@@ -173,7 +176,7 @@ class CategoriaServiceImplTest {
     void testDeleteCategoria_ConFunkosAsociados_LanzaException() {
         Categoria existing = new Categoria(1L, "ANIME", LocalDateTime.now(), LocalDateTime.now());
         when(categoriaRepository.findById(1L)).thenReturn(Optional.of(existing));
-        when(funkoRepository.findByCategoria("ANIME"))
+        when(funkoRepository.findByCategoria(existing))
                 .thenReturn(List.of(mock(Funko.class))); // simulamos funkos asociados
 
         CategoriaException.ConflictException ex = assertThrows(

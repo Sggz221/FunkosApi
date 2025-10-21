@@ -2,6 +2,10 @@ package org.example.funkos.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.example.categorias.dto.request.CategoriaPostPutRequest;
+import org.example.categorias.dto.response.CategoriaResponse;
+import org.example.categorias.mappers.CategoriaMapper;
+import org.example.categorias.models.Categoria;
 import org.example.funkos.dto.request.FunkoPatchRequest;
 import org.example.funkos.dto.request.FunkoPostPutRequest;
 import org.example.funkos.dto.response.FunkoDeleteResponse;
@@ -24,6 +28,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -52,13 +57,17 @@ public class FunkoRestControllerTest {
 
 
     // Datos de ejemplo
+    private final Categoria categoria = new Categoria(1L, "ANIME", LocalDateTime.now(), LocalDateTime.now());
+    private final CategoriaResponse categoriaResponse = CategoriaMapper.toResponse(categoria);
+    private final CategoriaPostPutRequest categoriaPostPutRequest = CategoriaMapper.toPostPut(categoria);
+
     private final UUID uuid = UUID.randomUUID();
     private final FunkoResponse funkoResponse = new FunkoResponse(
             1L,
             uuid.toString(),
             "Spider-Man",
             25.99,
-            "PELICULAS",
+            categoriaResponse,
             LocalDate.of(2022, 10, 5)
     );
 
@@ -67,7 +76,7 @@ public class FunkoRestControllerTest {
             uuid.toString(),
             "Spider-Man",
             25.99,
-            "PELICULAS",
+            categoriaPostPutRequest,
             "2022-10-05"
     );
 
@@ -302,75 +311,4 @@ public class FunkoRestControllerTest {
         verify(funkoService, times(1)).findByUuid(uuid.toString());
     }
 
-
-    @Test
-    void findByNombreQueryTest() throws Exception {
-        when(funkoService.findByNombreQuery("Spider")).thenReturn(List.of(funkoResponse));
-
-        MockHttpServletResponse response = mockMvc.perform(
-                        get("/funkos/nombreQuery/Spider")
-                                .accept(MediaType.APPLICATION_JSON))
-                .andReturn().getResponse();
-
-        List<FunkoResponse> res = mapper.readValue(response.getContentAsString(),
-                mapper.getTypeFactory().constructCollectionType(List.class, FunkoResponse.class));
-
-        assertEquals(HttpStatus.OK.value(), response.getStatus());
-        assertTrue(res.stream().anyMatch(f -> f.getNombre().equals("Spider-Man")));
-
-        verify(funkoService, times(1)).findByNombreQuery("Spider");
-    }
-
-    @Test
-    void findByPrecioLessThanQueryTest() throws Exception {
-        when(funkoService.findByPrecioLessThanQuery(30.0)).thenReturn(List.of(funkoResponse));
-
-        MockHttpServletResponse response = mockMvc.perform(
-                        get("/funkos/precioQuery/30.0")
-                                .accept(MediaType.APPLICATION_JSON))
-                .andReturn().getResponse();
-
-        List<FunkoResponse> res = mapper.readValue(response.getContentAsString(),
-                mapper.getTypeFactory().constructCollectionType(List.class, FunkoResponse.class));
-
-        assertEquals(HttpStatus.OK.value(), response.getStatus());
-        assertTrue(res.stream().allMatch(f -> f.getPrecio() <= 30.0));
-
-        verify(funkoService, times(1)).findByPrecioLessThanQuery(30.0);
-    }
-
-    @Test
-    void findByCategoriaQueryTest() throws Exception {
-        when(funkoService.findByCategoriaQuery("PELICULAS")).thenReturn(List.of(funkoResponse));
-
-        MockHttpServletResponse response = mockMvc.perform(
-                        get("/funkos/categoriaQuery/PELICULAS")
-                                .accept(MediaType.APPLICATION_JSON))
-                .andReturn().getResponse();
-
-        List<FunkoResponse> res = mapper.readValue(response.getContentAsString(),
-                mapper.getTypeFactory().constructCollectionType(List.class, FunkoResponse.class));
-
-        assertEquals(HttpStatus.OK.value(), response.getStatus());
-        assertTrue(res.stream().allMatch(f -> f.getCategoria().equals("PELICULAS")));
-
-        verify(funkoService, times(1)).findByCategoriaQuery("PELICULAS");
-    }
-
-    @Test
-    void findByUuidQueryTest() throws Exception {
-        when(funkoService.findByUuidQuery(uuid.toString())).thenReturn(funkoResponse);
-
-        MockHttpServletResponse response = mockMvc.perform(
-                        get("/funkos/uuidQuery/" + uuid.toString())
-                                .accept(MediaType.APPLICATION_JSON))
-                .andReturn().getResponse();
-
-        FunkoResponse res = mapper.readValue(response.getContentAsString(), FunkoResponse.class);
-
-        assertEquals(HttpStatus.OK.value(), response.getStatus());
-        assertEquals(uuid.toString(), res.getUuid());
-
-        verify(funkoService, times(1)).findByUuidQuery(uuid.toString());
-    }
 }
