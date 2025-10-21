@@ -2,6 +2,7 @@ package org.example.funkos.service;
 
 import ch.qos.logback.classic.Logger;
 import lombok.val;
+import org.example.categorias.models.Categoria;
 import org.example.funkos.dto.request.FunkoPatchRequest;
 import org.example.funkos.dto.request.FunkoPostPutRequest;
 import org.example.funkos.dto.response.FunkoDeleteResponse;
@@ -34,9 +35,13 @@ public class FunkoServiceImpl implements FunkoService {
     }
 
     private void initData(){
-        val funko = new Funko(null, UUID.randomUUID(), "Gyro Zeppeli", 20.0, "ANIME", LocalDate.now(), LocalDateTime.now(), LocalDateTime.now());
-        val funko2 = new Funko(null, UUID.randomUUID(), "Johnny Joestar", 20.0, "ANIME", LocalDate.now(), LocalDateTime.now(), LocalDateTime.now());
-        val funko3 = new Funko(null, UUID.randomUUID(), "Funny Valentine", 20.0, "ANIME", LocalDate.now(), LocalDateTime.now(), LocalDateTime.now());
+        val categoria = new Categoria(1L, "ANIME", LocalDateTime.now(), LocalDateTime.now());
+        val categoria2 = new Categoria(2L, "VIDEOJUEGOS", LocalDateTime.now(), LocalDateTime.now());
+        val categoria3 = new Categoria(3L, "PELICULAS", LocalDateTime.now(), LocalDateTime.now());
+
+        val funko = new Funko(null, UUID.randomUUID(), "Gyro Zeppeli", 20.0, categoria, LocalDate.now(), LocalDateTime.now(), LocalDateTime.now());
+        val funko2 = new Funko(null, UUID.randomUUID(), "Johnny Joestar", 20.0,  categoria2, LocalDate.now(), LocalDateTime.now(), LocalDateTime.now());
+        val funko3 = new Funko(null, UUID.randomUUID(), "Funny Valentine", 20.0, categoria3, LocalDate.now(), LocalDateTime.now(), LocalDateTime.now());
 
         repository.save(funko);
         repository.save(funko2);

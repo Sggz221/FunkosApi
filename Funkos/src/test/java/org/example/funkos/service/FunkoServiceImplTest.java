@@ -1,5 +1,6 @@
 package org.example.funkos.service;
 
+import org.example.categorias.models.Categoria;
 import org.example.funkos.dto.request.FunkoPatchRequest;
 import org.example.funkos.dto.request.FunkoPostPutRequest;
 import org.example.funkos.exceptions.FunkoException;
@@ -42,7 +43,7 @@ class FunkoServiceImplTest {
         funko.setUuid(UUID.randomUUID());
         funko.setNombre("Funko Goku");
         funko.setPrecio(25.0);
-        funko.setCategoria("ANIME");
+        funko.setCategoria(new Categoria(null, "ANIME", LocalDateTime.now(), LocalDateTime.now()));
         funko.setFechaLanzamiento(LocalDate.of(2021, 1, 1));
         funko.setCreatedAt(LocalDateTime.now());
         funko.setUpdatedAt(LocalDateTime.now());

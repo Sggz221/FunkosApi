@@ -76,10 +76,8 @@ public class CategoriaServiceImpl implements CategoriaService {
     public CategoriaResponse update(Long id, CategoriaPostPutRequest categoria) {
         logger.info("Actualizando categoria con id: " + id);
         val nombre = categoriaRepository.findByNombreIgnoreCase(categoria.getNombre()); // Si el nombre nuevo que se le quiere poner a esta categoria ya lo tiene otra hay que devolver un error
-        if(nombre != null) throw new CategoriaException.ConflictException("El nombre elegido para esta categoria ya lo tiene otra categoria");
-        val actualizada = categoriaRepository.findById(id).orElseThrow(
-                () -> new CategoriaException.NotFoundException("No se encontro categoria con id: " + id)
-        );
+        if(nombre != null && nombre.getId().equals(id)) throw new CategoriaException.ConflictException("El nombre elegido para esta categoria ya lo tiene otra categoria");
+        val actualizada = categoriaRepository.findById(id).orElseThrow(() -> new CategoriaException.NotFoundException("No se encontro categoria con id: " + id));
         actualizada.setId(id);
         actualizada.setNombre(categoria.getNombre());
         actualizada.setUpdatedAt(LocalDateTime.now());
@@ -91,13 +89,12 @@ public class CategoriaServiceImpl implements CategoriaService {
     public CategoriaResponse patch(Long id, CategoriaPatchRequest categoria) {
         logger.info("Actualizando (patch) categoria con id: " + id);
 
-        val actualizada = categoriaRepository.findById(id).orElseThrow(
-                () -> new CategoriaException.NotFoundException("No se encontro categoria con id: " + id)
-        );
-
-        if (categoria.getNombre() != null) { // Si el nombre nuevo que se le quiere poner a esta categoria ya lo tiene otra hay que devolver un error
-            if (categoriaRepository.findByNombreIgnoreCase(categoria.getNombre()) != null) throw new CategoriaException.ConflictException("El nombre elegido para esta categoria ya lo tiene otra categoria");
-            actualizada.setNombre(categoria.getNombre());
+        val actualizada = categoriaRepository.findById(id).orElseThrow(() -> new CategoriaException.NotFoundException("No se encontro categoria con id: " + id));
+        val nombre = categoriaRepository.findByNombreIgnoreCase(categoria.getNombre());
+        if (nombre != null) { // Si el nombre nuevo que se le quiere poner a esta categoria ya lo tiene otra hay que devolver un error
+            if (nombre.getNombre() != null && nombre.getId().equals(id)) throw new CategoriaException.ConflictException("El nombre elegido para esta categoria ya lo tiene otra categoria");
+            funkoRepository.actualizarCategorias(CategoriaMapper.patchToModel(categoria), actualizada); // Se actualiza la categoria de los funkos
+            actualizada.setNombre(categoria.getNombre()); // Se actualiza el nombre de la categoria
         }
         actualizada.setUpdatedAt(LocalDateTime.now());
         return CategoriaMapper.toResponse(categoriaRepository.save(actualizada));
