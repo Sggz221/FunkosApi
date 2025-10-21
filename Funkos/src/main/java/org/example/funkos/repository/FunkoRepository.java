@@ -16,21 +16,8 @@ public interface FunkoRepository extends JpaRepository<Funko, Long> {
     // Con nombre de metodos de JPA
     List<Funko> findByNombreContainingIgnoreCase(String nombre);
     List<Funko> findByPrecioLessThan(Double precio);
-    List<Funko> findByCategoriaIgnoreCase(String categoria);
+    List<Funko> findByCategoria(Categoria categoria);
     Funko findByUuid(UUID uuid);
-
-    // Con anotaciones Query
-    @Query("SELECT f FROM Funko f WHERE LOWER(f.nombre) LIKE LOWER(CONCAT('%', :nombre, '%'))")
-    List<Funko> findByNombreQuery(@Param("nombre") String nombre);
-
-    @Query("SELECT f FROM Funko f WHERE f.precio < :precio")
-    List<Funko> findByPrecioLessThanQuery(@Param("precio") Double precio);
-
-    @Query("SELECT f FROM Funko f WHERE f.categoria = :categoria")
-    List<Funko> findByCategoriaQuery(@Param("categoria") String categoria);
-
-    @Query("SELECT f FROM Funko f WHERE f.uuid = :uuid")
-    Funko findByUuidQuery(@Param("uuid") UUID uuid);
 
     // Actualizacion de categoria en cascada
     @Modifying

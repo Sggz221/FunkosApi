@@ -79,39 +79,14 @@ public class FunkoRestController {
     }
 
     @GetMapping({"categoria/{categoria}", "/categoria/{categoria}"})
-    public ResponseEntity<List<FunkoResponse>> findByCategoria(@PathVariable String categoria) {
-        logger.info("Buscando Funkos con categoria: " + categoria);
-        return ResponseEntity.ok(funkoService.findByCategoria(categoria));
+    public ResponseEntity<List<FunkoResponse>> findByCategoriaName(@PathVariable String nombre) {
+        logger.info("Buscando Funkos con categoria: " + nombre);
+        return ResponseEntity.ok(funkoService.findByCategoriaName(nombre));
     }
 
     @GetMapping({"uuid/{uuid}", "/uuid/{uuid}"})
     public ResponseEntity<FunkoResponse> findByUuid(@PathVariable String uuid) {
         logger.info("Buscando Funko con uuid: " + uuid);
         return ResponseEntity.ok(funkoService.findByUuid(uuid));
-    }
-
-    // Metodos extra con Query
-    @GetMapping({"nombreQuery/{nombre}", "/nombreQuery/{nombre}"})
-    public ResponseEntity<List<FunkoResponse>> findByNombreQuery(@PathVariable String nombre) {
-        logger.info("Buscando Funkos con por nombre: " + nombre);
-        return ResponseEntity.ok(funkoService.findByNombreQuery(nombre));
-    }
-
-    @GetMapping({"precioQuery/{precio}", "/precioQuery/{precio}"})
-    public ResponseEntity<List<FunkoResponse>> findByPrecioLessThanQuery(@PathVariable double precio) {
-        logger.info("Buscando Funkos con precio: " + precio);
-        return ResponseEntity.ok(funkoService.findByPrecioLessThanQuery(precio));
-    }
-
-    @GetMapping({"categoriaQuery/{categoria}", "/categoriaQuery/{categoria}"})
-    public ResponseEntity<List<FunkoResponse>> findByCategoriaQuery(@PathVariable String categoria) {
-        logger.info("Buscando Funkos con categoria: " + categoria);
-        return ResponseEntity.ok(funkoService.findByCategoriaQuery(categoria));
-    }
-
-    @GetMapping({"uuidQuery/{uuid}", "/uuidQuery/{uuid}"})
-    public ResponseEntity<FunkoResponse> findByUuidQuery(@PathVariable String uuid) {
-        logger.info("Buscando Funko con uuid: " + uuid);
-        return ResponseEntity.ok(funkoService.findByUuidQuery(uuid));
     }
 }

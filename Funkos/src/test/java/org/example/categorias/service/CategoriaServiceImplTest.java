@@ -105,7 +105,7 @@ class CategoriaServiceImplTest {
     void testDeleteWithFunkos() {
         Categoria cat = new Categoria(1L, "ANIME", LocalDateTime.now(), LocalDateTime.now());
         when(categoriaRepository.findById(1L)).thenReturn(Optional.of(cat));
-        when(funkoRepository.findByCategoriaIgnoreCase("ANIME")).thenReturn(List.of(funkoPrueba));
+        when(funkoRepository.findByCategoria("ANIME")).thenReturn(List.of(funkoPrueba));
 
         assertThrows(CategoriaException.ConflictException.class,
                 () -> categoriaService.delete(1L));
@@ -115,7 +115,7 @@ class CategoriaServiceImplTest {
     void testDeleteSuccess() {
         Categoria cat = new Categoria(1L, "ANIME", LocalDateTime.now(), LocalDateTime.now());
         when(categoriaRepository.findById(1L)).thenReturn(Optional.of(cat));
-        when(funkoRepository.findByCategoriaIgnoreCase("ANIME")).thenReturn(Collections.emptyList());
+        when(funkoRepository.findByCategoria("ANIME")).thenReturn(Collections.emptyList());
 
         CategoriaDeleteResponse response = categoriaService.delete(1L);
 
@@ -173,7 +173,7 @@ class CategoriaServiceImplTest {
     void testDeleteCategoria_ConFunkosAsociados_LanzaException() {
         Categoria existing = new Categoria(1L, "ANIME", LocalDateTime.now(), LocalDateTime.now());
         when(categoriaRepository.findById(1L)).thenReturn(Optional.of(existing));
-        when(funkoRepository.findByCategoriaIgnoreCase("ANIME"))
+        when(funkoRepository.findByCategoria("ANIME"))
                 .thenReturn(List.of(mock(Funko.class))); // simulamos funkos asociados
 
         CategoriaException.ConflictException ex = assertThrows(

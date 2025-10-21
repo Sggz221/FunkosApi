@@ -3,6 +3,7 @@ package org.example.funkos.dto.response;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.example.categorias.dto.response.CategoriaResponse;
 
 import java.time.LocalDate;
 
@@ -14,6 +15,6 @@ public class FunkoResponse {
     private String uuid;
     private String nombre;
     private Double precio;
-    private String categoria;
+    private CategoriaResponse categoria;
     private LocalDate fechaLanzamiento;
 }

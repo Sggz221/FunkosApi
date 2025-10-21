@@ -4,6 +4,7 @@ import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.example.categorias.dto.request.CategoriaPostPutRequest;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -20,8 +21,8 @@ public class FunkoPostPutRequest {
     @NotNull(message = "EL precio no puede ser nulo")
     @Min(value = 0, message = "El precio no peude ser negativo")
     private Double precio;
-    @NotBlank(message = "Se debe especificar una categoria")
-    private String categoria;
+    @NotNull(message = "Se debe especificar una categoria")
+    private CategoriaPostPutRequest categoria;
     @NotBlank(message = "Se debe especificar una fecha")
     @Pattern(regexp = "\\d{4}-\\d{2}-\\d{2}", message = "La fecha de lanzamiento debe tener formato AAAA-MM-DD")
     private String fechaLanzamiento;

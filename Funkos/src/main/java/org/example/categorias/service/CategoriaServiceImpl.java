@@ -106,7 +106,7 @@ public class CategoriaServiceImpl implements CategoriaService {
         val borrada = categoriaRepository.findById(id).orElseThrow(
                 () -> new CategoriaException.NotFoundException("No se encontro categoria con id: " + id)
         );
-        val funkos = funkoRepository.findByCategoriaIgnoreCase(borrada.getNombre()); // No se puede borrar la categoria si hay funkos que estan en ella
+        val funkos = funkoRepository.findByCategoria(borrada); // No se puede borrar la categoria si hay funkos que estan en ella
         if (!funkos.isEmpty()) throw new CategoriaException.ConflictException("Esta categoria tiene recursos asociados");
         categoriaRepository.delete(borrada);
         return new CategoriaDeleteResponse("Categoria borrada correctamente", CategoriaMapper.toResponse(borrada));

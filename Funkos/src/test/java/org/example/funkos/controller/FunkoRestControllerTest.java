@@ -22,7 +22,6 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.server.ResponseStatusException;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -270,7 +269,7 @@ public class FunkoRestControllerTest {
 
     @Test
     void findByCategoriaTest() throws Exception {
-        when(funkoService.findByCategoria("PELICULAS")).thenReturn(List.of(funkoResponse));
+        when(funkoService.findByCategoriaName("PELICULAS")).thenReturn(List.of(funkoResponse));
 
         MockHttpServletResponse response = mockMvc.perform(
                         get("/funkos/categoria/PELICULAS")
@@ -283,7 +282,7 @@ public class FunkoRestControllerTest {
         assertEquals(HttpStatus.OK.value(), response.getStatus());
         assertTrue(res.stream().allMatch(f -> f.getCategoria().equals("PELICULAS")));
 
-        verify(funkoService, times(1)).findByCategoria("PELICULAS");
+        verify(funkoService, times(1)).findByCategoriaName("PELICULAS");
     }
 
     @Test

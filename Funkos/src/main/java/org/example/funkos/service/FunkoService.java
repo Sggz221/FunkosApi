@@ -1,5 +1,6 @@
 package org.example.funkos.service;
 
+import org.example.categorias.models.Categoria;
 import org.example.funkos.dto.request.FunkoPatchRequest;
 import org.example.funkos.dto.request.FunkoPostPutRequest;
 import org.example.funkos.dto.response.FunkoDeleteResponse;
@@ -16,11 +17,6 @@ public interface FunkoService {
 
     List<FunkoResponse> findByNombreContainingIgnoreCase(String nombre);
     List<FunkoResponse> findByPrecioLessThan(Double precio);
-    List<FunkoResponse> findByCategoria(String categoria);
+    List<FunkoResponse> findByCategoriaName(String nombre);
     FunkoResponse findByUuid(String uuid);
-
-    List<FunkoResponse> findByNombreQuery(String nombre);
-    List<FunkoResponse> findByPrecioLessThanQuery(Double precio);
-    List<FunkoResponse> findByCategoriaQuery( String categoria);
-    FunkoResponse findByUuidQuery(String uuid);
 }

@@ -33,6 +33,15 @@ public class GlobalExceptionHandler {
         return errors;
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(IllegalArgumentException.class)
+    public Map<String, String> handleInvalidOnService( IllegalArgumentException ex) {
+        Map<String, String> errors = new HashMap<>();
+        errors.put("status", "400");
+        errors.put("error", ex.getMessage());
+        return errors;
+    }
+
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(FunkoException.NotFoundException.class)
     public Map<String, String> handleFunkoNotFoundException( FunkoException.NotFoundException ex) {

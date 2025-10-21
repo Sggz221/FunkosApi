@@ -1,5 +1,6 @@
 package org.example.funkos.service;
 
+import org.example.categorias.dto.request.CategoriaPostPutRequest;
 import org.example.categorias.models.Categoria;
 import org.example.funkos.dto.request.FunkoPatchRequest;
 import org.example.funkos.dto.request.FunkoPostPutRequest;
@@ -52,7 +53,7 @@ class FunkoServiceImplTest {
         requestPostPut.setUuid(UUID.randomUUID().toString());
         requestPostPut.setNombre("Funko Vegeta");
         requestPostPut.setPrecio(30.0);
-        requestPostPut.setCategoria("ANIME");
+        requestPostPut.setCategoria(new CategoriaPostPutRequest(null, "ANIME"));
         requestPostPut.setFechaLanzamiento(LocalDate.of(2023, 5, 10).toString());
 
         requestPatch = new FunkoPatchRequest();

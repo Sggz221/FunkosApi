@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CategoriaPostPutRequest {
-    @NotBlank
+    private Long id;
+    @Pattern(regexp = "^(?!\\s*$).+", message = "El nombre no puede estar vacío")
     private String nombre;
 }

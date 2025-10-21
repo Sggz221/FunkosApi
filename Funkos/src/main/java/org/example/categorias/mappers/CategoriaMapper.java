@@ -34,6 +34,7 @@ public class CategoriaMapper {
 
     public static CategoriaPostPutRequest toPostPut(Categoria categoria) {
         return new CategoriaPostPutRequest(
+                categoria.getId(),
                 categoria.getNombre()
         );
     }
