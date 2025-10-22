@@ -1,9 +1,8 @@
 package org.example.funkos.dto.request;
 
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.*;
 import lombok.Data;
+import org.example.categorias.dto.request.CategoriaPatchRequest;
 
 import java.util.UUID;
 
@@ -15,8 +14,7 @@ public class FunkoPatchRequest {
     private String uuid;
     @Min(value = 0, message = "El precio no puede ser negativo")
     private Double precio;
-    @Pattern(regexp = "^(?!\\s*$).+", message = "La categoria no puede estar vacía")
-    private String categoria;
+    private CategoriaPatchRequest categoria;
     @Pattern(regexp = "\\d{4}-\\d{2}-\\d{2}", message = "La fecha de lanzamiento debe tener formato AAAA-MM-DD")
     private String fechaLanzamiento;
 }

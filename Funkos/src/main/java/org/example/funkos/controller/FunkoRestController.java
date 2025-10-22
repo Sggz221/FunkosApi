@@ -79,9 +79,9 @@ public class FunkoRestController {
     }
 
     @GetMapping({"categoria/{categoria}", "/categoria/{categoria}"})
-    public ResponseEntity<List<FunkoResponse>> findByCategoriaName(@PathVariable String nombre) {
-        logger.info("Buscando Funkos con categoria: " + nombre);
-        return ResponseEntity.ok(funkoService.findByCategoriaName(nombre));
+    public ResponseEntity<List<FunkoResponse>> findByCategoriaName(@PathVariable String categoria) {
+        logger.info("Buscando Funkos con categoria: " + categoria);
+        return ResponseEntity.ok(funkoService.findByCategoriaName(categoria));
     }
 
     @GetMapping({"uuid/{uuid}", "/uuid/{uuid}"})

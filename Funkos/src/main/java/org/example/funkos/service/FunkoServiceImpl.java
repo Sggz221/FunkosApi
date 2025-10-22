@@ -87,13 +87,30 @@ public class FunkoServiceImpl implements FunkoService {
     @CachePut(value = "funkos", key = "#id")
     public FunkoResponse update(FunkoPostPutRequest funko, Long id) {
         logger.info("Actualizando funko con id: " + id);
-        if (repository.findById(id).isEmpty()) throw new FunkoException.NotFoundException("No se ha encontrado el funko con id: " + id);
 
-        val funkoToUpdate = FunkoMapper.postPutToModel(funko);
-        funkoToUpdate.setId(id);
-        funkoToUpdate.setUpdatedAt(LocalDateTime.now());
-        return FunkoMapper.toResponse(repository.save(funkoToUpdate)); //  EL save funciona como update pero hibernate infiere si auieres actualizar o guardar
+        // Traer funko existente
+        Funko existing = repository.findById(id)
+                .orElseThrow(() -> new FunkoException.NotFoundException("No se ha encontrado el funko con id: " + id));
+
+        // Validar y traer categoria
+        if (!isCategoriaValid(funko.getCategoria()))
+            throw new FunkoException.ConflictException("La categoría no es válida.");
+
+        Categoria categoria = categoriaRepository.findById(funko.getCategoria().getId())
+                .orElseThrow(() -> new CategoriaException.NotFoundException("La categoría indicada no existe."));
+
+        // Actualizar campos
+        existing.setNombre(funko.getNombre());
+        existing.setPrecio(funko.getPrecio());
+        existing.setCategoria(categoria);
+        if (funko.getFechaLanzamiento() != null) existing.setFechaLanzamiento(LocalDate.parse(funko.getFechaLanzamiento()));
+        existing.setUpdatedAt(LocalDateTime.now());
+
+        // Guardar y devolver
+        Funko updated = repository.save(existing);
+        return FunkoMapper.toResponse(updated);
     }
+
 
     @Override
     @CachePut(value = "funkos", key = "#id")
@@ -108,7 +125,7 @@ public class FunkoServiceImpl implements FunkoService {
         if (funko.getNombre() != null) existing.setNombre(funko.getNombre());
         if (funko.getPrecio() != null) existing.setPrecio(funko.getPrecio());
         if (funko.getCategoria() != null) {
-            val categoria = categoriaRepository.findByNombreIgnoreCase(funko.getCategoria());
+            val categoria = categoriaRepository.findByNombreIgnoreCase(funko.getCategoria().getNombre());
             if (categoria == null) throw new CategoriaException.NotFoundException("La categoría que se intentó poner en el funko no existe.");
             existing.setCategoria(categoria); // Si existe se inserta en el funko
         }

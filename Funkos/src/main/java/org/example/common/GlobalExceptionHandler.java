@@ -51,6 +51,15 @@ public class GlobalExceptionHandler {
         return errors;
     }
 
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(FunkoException.ConflictException.class)
+    public Map<String, String> handleFunkoConflictException( FunkoException.ConflictException ex) {
+        Map<String, String> errors = new HashMap<>();
+        errors.put("status", "409");
+        errors.put("error", ex.getMessage());
+        return errors;
+    }
+
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(CategoriaException.NotFoundException.class)
     public Map<String, String> handleCategoriaNotFoundException( CategoriaException.NotFoundException ex) {

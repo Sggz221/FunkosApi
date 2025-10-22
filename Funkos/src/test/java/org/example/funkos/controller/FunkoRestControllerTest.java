@@ -2,6 +2,7 @@ package org.example.funkos.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.example.categorias.dto.request.CategoriaPatchRequest;
 import org.example.categorias.dto.request.CategoriaPostPutRequest;
 import org.example.categorias.dto.response.CategoriaResponse;
 import org.example.categorias.mappers.CategoriaMapper;
@@ -191,7 +192,7 @@ public class FunkoRestControllerTest {
     @Test
     void patchFunkoTest() throws Exception {
         funkoPatch.setPrecio(30.0);
-        funkoPatch.setCategoria("ANIME");
+        funkoPatch.setCategoria(new CategoriaPatchRequest("ANIME"));
 
         when(funkoService.patch(funkoPatch, funkoResponse.getId())).thenReturn(funkoResponse);
 
@@ -215,12 +216,25 @@ public class FunkoRestControllerTest {
 
     @Test
     void deleteFunkoTest() throws Exception {
+        // Crear una categoría válida
+        Categoria categoria = new Categoria(1L, "ANIME", LocalDateTime.now(), LocalDateTime.now());
+
+        // Crear el funko con categoría
         Funko deleted = new Funko();
         deleted.setId(1L);
         deleted.setNombre("Spider-Man");
         deleted.setUuid(UUID.randomUUID());
+        deleted.setCategoria(categoria);
+        deleted.setPrecio(19.99);
+        deleted.setFechaLanzamiento(LocalDate.now());
+        deleted.setCreatedAt(LocalDateTime.now());
+        deleted.setUpdatedAt(LocalDateTime.now());
 
-        FunkoDeleteResponse deleteResponse = new FunkoDeleteResponse("Funko eliminado correctamente", FunkoMapper.toResponse(deleted));
+        // Crear el response simulado
+        FunkoDeleteResponse deleteResponse = new FunkoDeleteResponse(
+                "Funko eliminado correctamente",
+                FunkoMapper.toResponse(deleted)
+        );
 
         when(funkoService.delete(funkoResponse.getId())).thenReturn(deleteResponse);
 
@@ -233,7 +247,7 @@ public class FunkoRestControllerTest {
 
         assertAll(
                 () -> assertEquals(HttpStatus.OK.value(), response.getStatus()),
-                () -> assertTrue(res.getMensaje().contains("eliminado"))
+                () -> assertTrue(res.getMensaje().toLowerCase().contains("eliminado"))
         );
 
         verify(funkoService, times(1)).delete(funkoResponse.getId());
@@ -278,10 +292,10 @@ public class FunkoRestControllerTest {
 
     @Test
     void findByCategoriaTest() throws Exception {
-        when(funkoService.findByCategoriaName("PELICULAS")).thenReturn(List.of(funkoResponse));
+        when(funkoService.findByCategoriaName("ANIME")).thenReturn(List.of(funkoResponse));
 
         MockHttpServletResponse response = mockMvc.perform(
-                        get("/funkos/categoria/PELICULAS")
+                        get("/funkos/categoria/ANIME")
                                 .accept(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
 
@@ -289,10 +303,11 @@ public class FunkoRestControllerTest {
                 mapper.getTypeFactory().constructCollectionType(List.class, FunkoResponse.class));
 
         assertEquals(HttpStatus.OK.value(), response.getStatus());
-        assertTrue(res.stream().allMatch(f -> f.getCategoria().equals("PELICULAS")));
+        assertTrue(res.stream().allMatch(f -> f.getCategoria().getNombre().equals("ANIME")));
 
-        verify(funkoService, times(1)).findByCategoriaName("PELICULAS");
+        verify(funkoService, times(1)).findByCategoriaName("ANIME");
     }
+
 
     @Test
     void findByUuidTest() throws Exception {

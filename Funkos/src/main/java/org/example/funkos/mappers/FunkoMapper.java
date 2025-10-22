@@ -21,7 +21,7 @@ public class FunkoMapper {
 
         funko.setNombre(dto.getNombre());
         funko.setPrecio(dto.getPrecio());
-        funko.setCategoria(CategoriaMapper.postPutToModel(dto.getCategoria()));
+        //funko.setCategoria(CategoriaMapper.postPutToModel(dto.getCategoria()));
 
 
         if (dto.getFechaLanzamiento() != null && !dto.getFechaLanzamiento().isBlank()) {

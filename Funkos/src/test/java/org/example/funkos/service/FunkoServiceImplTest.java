@@ -2,8 +2,10 @@ package org.example.funkos.service;
 
 import org.example.categorias.dto.request.CategoriaPostPutRequest;
 import org.example.categorias.models.Categoria;
+import org.example.categorias.repositories.CategoriaRepository;
 import org.example.funkos.dto.request.FunkoPatchRequest;
 import org.example.funkos.dto.request.FunkoPostPutRequest;
+import org.example.funkos.dto.response.FunkoResponse;
 import org.example.funkos.exceptions.FunkoException;
 import org.example.funkos.mappers.FunkoMapper;
 import org.example.funkos.models.Funko;
@@ -26,6 +28,8 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class FunkoServiceImplTest {
+    @Mock
+    private CategoriaRepository categoriaRepository;
 
     @Mock
     private FunkoRepository repository;
@@ -36,15 +40,17 @@ class FunkoServiceImplTest {
     private Funko funko;
     private FunkoPostPutRequest requestPostPut;
     private FunkoPatchRequest requestPatch;
-
+    Categoria categoria = new Categoria(1L, "ANIME", LocalDateTime.now(), LocalDateTime.now());
+    CategoriaPostPutRequest categoriaPostPut = new CategoriaPostPutRequest(1L, "ANIME");
     @BeforeEach
     void setUp() {
+
         funko = new Funko();
         funko.setId(1L);
         funko.setUuid(UUID.randomUUID());
         funko.setNombre("Funko Goku");
         funko.setPrecio(25.0);
-        funko.setCategoria(new Categoria(null, "ANIME", LocalDateTime.now(), LocalDateTime.now()));
+        funko.setCategoria(categoria);
         funko.setFechaLanzamiento(LocalDate.of(2021, 1, 1));
         funko.setCreatedAt(LocalDateTime.now());
         funko.setUpdatedAt(LocalDateTime.now());
@@ -53,7 +59,7 @@ class FunkoServiceImplTest {
         requestPostPut.setUuid(UUID.randomUUID().toString());
         requestPostPut.setNombre("Funko Vegeta");
         requestPostPut.setPrecio(30.0);
-        requestPostPut.setCategoria(new CategoriaPostPutRequest(null, "ANIME"));
+        requestPostPut.setCategoria(categoriaPostPut);
         requestPostPut.setFechaLanzamiento(LocalDate.of(2023, 5, 10).toString());
 
         requestPatch = new FunkoPatchRequest();
@@ -93,19 +99,22 @@ class FunkoServiceImplTest {
 
     @Test
     void save_ShouldReturnSavedFunko() {
-        Funko mapped = FunkoMapper.postPutToModel(requestPostPut);
-        when(repository.save(any(Funko.class))).thenReturn(mapped);
+        when(categoriaRepository.findByNombreIgnoreCase("ANIME")).thenReturn(categoria);
+        when(categoriaRepository.findById(1L)).thenReturn(Optional.of(categoria));
+        when(repository.save(any(Funko.class))).thenReturn(funko);
 
-        var result = service.save(requestPostPut);
+        FunkoResponse result = service.save(requestPostPut);
 
         assertNotNull(result);
-        assertEquals("Funko Vegeta", result.getNombre());
+        assertEquals("Funko Goku", result.getNombre());
         verify(repository, atLeastOnce()).save(any(Funko.class));
-
     }
 
     @Test
     void update_ShouldReturnUpdatedFunko_WhenExists() {
+        Categoria categoria = new Categoria(1L, "ANIME", LocalDateTime.now(), LocalDateTime.now());
+        when(categoriaRepository.findById(1L)).thenReturn(Optional.of(categoria));
+        when(categoriaRepository.findByNombreIgnoreCase("ANIME")).thenReturn(categoria);
         when(repository.findById(1L)).thenReturn(Optional.of(funko));
         when(repository.save(any(Funko.class))).thenAnswer(invocation -> {
             Funko arg = invocation.getArgument(0);

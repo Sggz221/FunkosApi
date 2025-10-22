@@ -6,7 +6,9 @@ import org.example.categorias.dto.request.CategoriaPatchRequest;
 import org.example.categorias.dto.request.CategoriaPostPutRequest;
 import org.example.categorias.dto.response.CategoriaDeleteResponse;
 import org.example.categorias.dto.response.CategoriaResponse;
+import org.example.categorias.exceptions.CategoriaException;
 import org.example.categorias.service.CategoriaServiceImpl;
+import org.example.funkos.service.FunkoServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,7 +21,6 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -35,21 +36,24 @@ public class CategoriaControllerTest {
     @MockitoBean
     private CategoriaServiceImpl categoriaService;
 
+    @MockitoBean
+    private FunkoServiceImpl funkoService;
+
     @Autowired
     private MockMvc mockMvc;
 
     private ObjectMapper mapper;
+
+    private final String endpoint = "/categorias";
+    private final CategoriaResponse categoriaResponse = new CategoriaResponse(1L, "ANIME");
+    private final CategoriaPostPutRequest postPutRequest = new CategoriaPostPutRequest(1L, "MANGA");
+    private final CategoriaPatchRequest patchRequest = new CategoriaPatchRequest("MANGA");
 
     @BeforeEach
     void setUp() {
         mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
     }
-
-    private final CategoriaResponse categoriaResponse = new CategoriaResponse(1L, "ANIME");
-    private final CategoriaPostPutRequest postPutRequest = new CategoriaPostPutRequest(1L, "MANGA");
-    private final CategoriaPatchRequest patchRequest = new CategoriaPatchRequest("MANGA");
-    private final String endpoint = "/categorias";
 
     @Test
     void getAllTest() throws Exception {
@@ -93,15 +97,18 @@ public class CategoriaControllerTest {
     @Test
     void getByIdNotFoundTest() throws Exception {
         when(categoriaService.getById(-1L))
-                .thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, "Categoria no encontrada"));
+                .thenThrow(new CategoriaException.NotFoundException("Categoria no encontrada"));
 
         MockHttpServletResponse response = mockMvc.perform(get(endpoint + "/-1")
                         .accept(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
 
         assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
+        assertTrue(response.getContentAsString().contains("Categoria no encontrada"));
+
         verify(categoriaService, times(1)).getById(-1L);
     }
+
 
     @Test
     void saveTest() throws Exception {
